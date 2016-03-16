@@ -23,22 +23,15 @@ public class LongRunningService  extends Service {
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-    /*    new Thread(new Runnable() {
-            @Override
-            public void run() {
-                if((jpgFile.exists() == true )&&(jpgFile.isDirectory() == false)) {
-                	//Log.d("LongRunningService", "The length of file is : " + jpgFile.length());
-                    if(jpglenth == jpgFile.length()) {
-                    	
-                    }
-                    else {
-                    	jpglenth = jpgFile.length();
-                    }
-                }
+        if((jpgFile.exists() == true )&&(jpgFile.isDirectory() == false)) {
+            if(jpglenth == jpgFile.length()) {
+            	Intent broadcastIntent = new Intent("com.example.androidtcp.receiver");
+            	sendBroadcast(broadcastIntent);
             }
-        }).start();*/
-        Intent broadcastIntent = new Intent("com.example.androidtcp.receiver");
-    	sendBroadcast(broadcastIntent);
+            else {
+            	jpglenth = jpgFile.length();
+            }
+        }
         AlarmManager manager = (AlarmManager) getSystemService(ALARM_SERVICE);
         int aSecond = 3000;
         long triggerAtTime = SystemClock.elapsedRealtime() + aSecond;

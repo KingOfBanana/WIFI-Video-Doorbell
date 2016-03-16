@@ -97,10 +97,9 @@ public class TCPActivity extends Activity {
 			new tcpClientThread().interrupt();
 			btnConnect.setText("开始连接");
 			edtRemoteIP.setEnabled(true);
-			edtRemotePort.setEnabled(true);
+			edtRemotePort.setEnabled(true);	
 			
-			unregisterReceiver(hbr);
-			
+			unregisterReceiver(hbr);	
 			Intent intent  = new Intent(this, LongRunningService.class);
 			stopService(intent);
 		}
@@ -111,14 +110,6 @@ public class TCPActivity extends Activity {
 			edtRemoteIP.setEnabled(false);
 			edtRemotePort.setEnabled(false);
 			new tcpClientThread().start();
-			
-			Intent alarmIntent = new Intent(this, LongRunningService.class);
-			startService(alarmIntent);
-			
-			hbr = new HandleBroadcastReceiver();
-			IntentFilter intentFilter  = new IntentFilter();
-			intentFilter.addAction("com.example.androidtcp.receiver");
-			registerReceiver(hbr, intentFilter);
 		}
 	}
 	//发送信息按钮单击事件
@@ -158,6 +149,15 @@ public class TCPActivity extends Activity {
 				printWriterClient = new PrintWriter(socketClient.getOutputStream(), true);
 				receiveInfoClient = "连接服务器成功!\n";
 				offline = false;
+				
+				Intent alarmIntent = new Intent(MyApplication.getContext(), LongRunningService.class);
+				startService(alarmIntent);
+				
+				hbr = new HandleBroadcastReceiver();
+				IntentFilter intentFilter  = new IntentFilter();
+				intentFilter.addAction("com.example.androidtcp.receiver");
+				registerReceiver(hbr, intentFilter);
+				
 				Message msg = new Message();
 				msg.what=0x123;
 				handler.sendMessage(msg);
@@ -382,6 +382,11 @@ public class TCPActivity extends Activity {
 			btnConnect.setText("开始连接");
 			edtRemoteIP.setEnabled(true);
 			edtRemotePort.setEnabled(true);
+			
+			unregisterReceiver(hbr);
+			
+			Intent intent  = new Intent(this, LongRunningService.class);
+			stopService(intent);
 		}
 	}
 	public void reConnect(boolean isConnected){
@@ -409,7 +414,9 @@ public class TCPActivity extends Activity {
 
 		@Override
 		public void onReceive(Context context, Intent intent) {
-			Log.d("Test", "Enter the error handler.");
+			Log.d("TestForS&R", "Enter the error handler.");
+			printWriterClient.print("GP");
+	    	printWriterClient.flush();
 			/*
 			offline = true;
 			Message msg = new Message();
